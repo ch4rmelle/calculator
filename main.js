@@ -28,16 +28,21 @@ for(let num of numBtns) {
         tempValue += num.innerText
         console.log(typeof tempValue)
         inputValues.textContent = tempValue
+
+        selectOperator()
     })
 }
-
-for (let op of operatorBtns) {
-    op.addEventListener('click', (e) => {
-       updateValues()
-       currOperator = op.innerText
-       prevValues.textContent = `${runningTotal} ${currOperator} ${tempValue}`
-       decimalBtn.disabled = false
-    })
+function selectOperator(){
+    if(tempValue === "") return
+    
+    for (let op of operatorBtns) {
+        op.addEventListener('click', (e) => {
+        updateValues()
+        currOperator = op.innerText
+        prevValues.textContent = `${runningTotal} ${currOperator} ${tempValue}`
+        decimalBtn.disabled = false
+        })
+    }
 }
 
 function operate(operator, num1, num2){
@@ -73,7 +78,6 @@ function updateValues() {
         operate(currOperator, runningTotal, tempValue)
         tempValue = ""
     }
-
 }
 
 function add(...args) {
@@ -103,7 +107,6 @@ function divide(...args){
     }
     runningTotal = roundNumber(quotient)
     inputValues.textContent = runningTotal
-
 }
 
 function deleteValue() {
