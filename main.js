@@ -35,11 +35,6 @@ deleteBtn.onclick = () => {
         tempValue = tempValue.toString()
         tempValue = [...tempValue].slice(0,-1).join("")
         display.textContent = tempValue
-    } else {
-        runningTotal = runningTotal.toString()
-        runningTotal = [...runningTotal].slice(0,-1).join("")
-        display.textContent = runningTotal
-        runningTotal = Number(runningTotal)
     }
 }
 
