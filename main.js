@@ -16,6 +16,13 @@ const percentBtn = document.querySelector('#percent-btn')
 const deleteBtn = document.querySelector('#delete-btn')
 const changeSignBtn = document.querySelector('#change-sign')
 
+clearBtn.addEventListener('click', resetCalc)
+deleteBtn.addEventListener('click', deleteValue)
+percentBtn.addEventListener('click', togglePercent)
+changeSignBtn.addEventListener('click', changeSign)
+equalsBtn.addEventListener('click', updateValues)
+decimalBtn.addEventListener('click', () =>  decimalBtn.disabled = true )
+
 for(let num of numBtns) {
     num.addEventListener('click', () => {
         tempValue += num.innerText
@@ -24,37 +31,32 @@ for(let num of numBtns) {
     })
 }
 
-clearBtn.addEventListener('click', resetCalc)
-deleteBtn.addEventListener('click', deleteValue)
-percentBtn.addEventListener('click', togglePercent)
-changeSignBtn.addEventListener('click', changeSign)
-equalsBtn.addEventListener('click', updateValues)
-decimalBtn.addEventListener('click', () =>  decimalBtn.disabled = true )
+for (let op of operatorBtns) {
+    op.addEventListener('click', () => {
+       updateValues()
+       currOperator = op.innerText
+       decimalBtn.disabled = false
+    })
+}
 
-addBtn.addEventListener('click', () => {
-    updateValues()
-    currOperator = addBtn.innerText
-    decimalBtn.disabled = false
-})
-
-subtractBtn.addEventListener('click', () => {
-    updateValues()
-    currOperator = subtractBtn.innerText
-    decimalBtn.disabled = false
-})
-
-divideBtn.addEventListener('click', () => {
-    updateValues()
-    currOperator = divideBtn.innerText
-    decimalBtn.disabled = false
-})
-
-multiplyBtn.addEventListener('click', () => {
-    updateValues()
-    currOperator = multiplyBtn.innerText
-    decimalBtn.disabled = false
-})
-
+function operate(operator, num1, num2){
+    switch(operator) {
+        case "+":
+            add(num1, num2)
+            break
+        case "-":
+            subtract(num1,num2)
+            break
+        case "x":
+            multiply(num1, num2)
+            break   
+        case "÷":
+            divide(num1, num2)
+            break 
+        default: 
+            break       
+    }
+}
 
 function updateValues() {
     if (tempValue === "") return
@@ -95,6 +97,7 @@ function divide(...args){
     const quotient = [...args].reduce((accum, currentValue) => accum / currentValue)
     if (quotient === Infinity) {
         display.textContent = "Error: DIV/0"
+        runningTotal = ""
         return
     }
     runningTotal = quotient
@@ -102,30 +105,13 @@ function divide(...args){
 
 }
 
-function operate(operator, num1, num2){
-    switch(operator) {
-        case "+":
-            add(num1, num2)
-            break
-        case "-":
-            subtract(num1,num2)
-            break
-        case "x":
-            multiply(num1, num2)
-            break   
-        case "÷":
-            divide(num1, num2)
-            break 
-        default: 
-            break       
-    }
-}
-
 function deleteValue() {
     if(display.textContent === tempValue) {
         tempValue = tempValue.toString()
         tempValue = [...tempValue].slice(0,-1).join("")
         display.textContent = tempValue
+    } else {
+        display.textContent = 0
     }
 }
 
