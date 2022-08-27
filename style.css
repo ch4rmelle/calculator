@@ -15,23 +15,12 @@ body {
     font-family: Inter, sans-serif;
 }
 
-button, input {
-    border-radius: 20px;
-    font-family: 'Share Tech Mono', monospace;
-}
-
 button {
     font-size: 30px;
+    font-family: 'Share Tech Mono', monospace;
+    border-radius: 20px;
 }
-input {
-    width: 360px;
-    padding: 10px 0;
-    text-align: right;
-    font-size: 50px;
-    margin-bottom: 10px;
 
-    border: 2px solid rgb(176, 176, 176);
-}
 button:hover {
     opacity: 0.9;
 }
@@ -84,7 +73,6 @@ button:hover {
     justify-content: flex-end;
     align-items: center;
     margin-bottom: 10px;
-
 }
 
 #stretch {
