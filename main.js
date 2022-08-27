@@ -12,18 +12,23 @@ const addBtn = document.querySelector('#add')
 const divideBtn = document.querySelector('#divide')
 const multiplyBtn = document.querySelector('#multiply')
 const clearBtn = document.querySelector('#clear')
+const decimalBtn = document.querySelector('#decimal')
 
 clearBtn.addEventListener('click', () => {
     values = []
     tempValue = ""
-    display.value = ""
+    display.textContent = ""
+    decimalBtn.disabled = false;
 })
-//display numbers on the input screen
+
+decimalBtn.addEventListener('click', () => {
+    decimalBtn.disabled = true;
+} )
+
 for(let num of numBtns) {
     num.addEventListener('click', () => {
         tempValue += num.innerText
-        display.value = tempValue
-        console.log(tempValue)
+        display.textContent = tempValue
     })
 }
 
@@ -67,6 +72,7 @@ function operatorChoice() {
     })
 
 }
+
 function updateArray() {
     if (tempValue === "" ) return
     if (operatorClick && tempValue !== "") {
@@ -100,6 +106,11 @@ function multiply([...args]){
 
 function divide([...args]){
     const quotient = [...args].reduce((accum, currentValue) => accum / currentValue)
+    if (quotient === Infinity) {
+        display.textContent = "Error: DIV/0"
+        let rmValues = values.splice(0,2)
+        return
+    }
     roundNumber(quotient)
     values = []
     values.push(quotient)
@@ -124,6 +135,8 @@ function operate(operator, [...args]){
     }
 }
 function calculate() {
+    if (values.length === 0) return
+
     updateArray()
     operate(currOperator, values)
 }
@@ -131,11 +144,10 @@ function calculate() {
 function roundNumber(num) {
     if(num % 1 === 0)
         {
-            display.value = num
+            display.textContent = num
         } else {
-            display.value = num.toFixed(4)
+            display.textContent = num.toFixed(5)
         }
-
 }
 
 operatorChoice()
