@@ -12,8 +12,9 @@ const divideBtn = document.querySelector('#divide')
 const multiplyBtn = document.querySelector('#multiply')
 const clearBtn = document.querySelector('#clear')
 const decimalBtn = document.querySelector('#decimal')
-const percentBtn = document.getElementById('percent-btn')
-const deleteBtn = document.getElementById('delete-btn')
+const percentBtn = document.querySelector('#percent-btn')
+const deleteBtn = document.querySelector('#delete-btn')
+const changeSignBtn = document.querySelector('#change-sign')
 
 for(let num of numBtns) {
     num.addEventListener('click', () => {
@@ -23,33 +24,12 @@ for(let num of numBtns) {
     })
 }
 
-clearBtn.addEventListener('click', () => {
-    runningTotal = ""
-    tempValue = ""
-    display.textContent = ""
-    decimalBtn.disabled = false;
-})
-
-deleteBtn.onclick = () => {
-    if(display.textContent === tempValue) {
-        tempValue = tempValue.toString()
-        tempValue = [...tempValue].slice(0,-1).join("")
-        display.textContent = tempValue
-    }
-}
-
-percentBtn.onclick = () => {
-    if(display.textContent === tempValue) {
-        tempValue = tempValue / 100
-        display.textContent = tempValue
-    } else {
-        runningTotal = runningTotal / 100
-        display.textContent = runningTotal
-    }
-}
-
-decimalBtn.addEventListener('click', () =>  decimalBtn.disabled = true )
+clearBtn.addEventListener('click', resetCalc)
+deleteBtn.addEventListener('click', deleteValue)
+percentBtn.addEventListener('click', togglePercent)
+changeSignBtn.addEventListener('click', changeSign)
 equalsBtn.addEventListener('click', updateValues)
+decimalBtn.addEventListener('click', () =>  decimalBtn.disabled = true )
 
 addBtn.addEventListener('click', () => {
     updateValues()
@@ -74,6 +54,7 @@ multiplyBtn.addEventListener('click', () => {
     currOperator = multiplyBtn.innerText
     decimalBtn.disabled = false
 })
+
 
 function updateValues() {
     if (tempValue === "") return
@@ -138,6 +119,42 @@ function operate(operator, num1, num2){
         default: 
             break       
     }
+}
+
+function deleteValue() {
+    if(display.textContent === tempValue) {
+        tempValue = tempValue.toString()
+        tempValue = [...tempValue].slice(0,-1).join("")
+        display.textContent = tempValue
+    }
+}
+
+function resetCalc() {
+    runningTotal = ""
+    tempValue = ""
+    display.textContent = ""
+    decimalBtn.disabled = false;
+}
+
+function togglePercent() {
+    if(display.textContent === tempValue) {
+        tempValue = tempValue / 100
+        display.textContent = tempValue
+    } else {
+        runningTotal = runningTotal / 100
+        display.textContent = runningTotal
+    }
+}
+
+function changeSign() {
+    if (Math.sign(tempValue) === 1) {
+        tempValue = -tempValue
+        display.textContent = tempValue
+        } 
+    else if (Math.sign(tempValue) === -1){
+        tempValue = tempValue * (-1)
+        display.textContent = tempValue
+        }
 }
 
 function roundNumber(num) {
