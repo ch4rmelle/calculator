@@ -1,6 +1,5 @@
-let values = []
 let tempValue = ""
-let operatorClick = false
+let runningTotal = ""
 let currOperator = ""
 
 const numBtns = document.querySelectorAll('.num')
@@ -13,123 +12,144 @@ const divideBtn = document.querySelector('#divide')
 const multiplyBtn = document.querySelector('#multiply')
 const clearBtn = document.querySelector('#clear')
 const decimalBtn = document.querySelector('#decimal')
-const percentBtn = document.querySelector('#percent')
+const percentBtn = document.getElementById('percent-btn')
+const deleteBtn = document.getElementById('delete-btn')
 
 for(let num of numBtns) {
     num.addEventListener('click', () => {
         tempValue += num.innerText
+        console.log(typeof tempValue)
         display.textContent = tempValue
     })
 }
 
 clearBtn.addEventListener('click', () => {
-    values = []
+    runningTotal = ""
     tempValue = ""
     display.textContent = ""
     decimalBtn.disabled = false;
 })
 
+deleteBtn.onclick = () => {
+    if(display.textContent === tempValue) {
+        tempValue = tempValue.toString()
+        tempValue = [...tempValue].slice(0,-1).join("")
+        display.textContent = tempValue
+    } else {
+        runningTotal = runningTotal.toString()
+        runningTotal = [...runningTotal].slice(0,-1).join("")
+        display.textContent = runningTotal
+        runningTotal = Number(runningTotal)
+    }
+}
+
+percentBtn.onclick = () => {
+    if(display.textContent === tempValue) {
+        tempValue = tempValue / 100
+        display.textContent = tempValue
+    } else {
+        runningTotal = runningTotal / 100
+        display.textContent = runningTotal
+    }
+}
+
 decimalBtn.addEventListener('click', () =>  decimalBtn.disabled = true )
-equalsBtn.addEventListener('click', calculate)
+equalsBtn.addEventListener('click', updateValues)
 
 addBtn.addEventListener('click', () => {
-    operatorChoice(currOperator)
+    updateValues()
     currOperator = addBtn.innerText
+    decimalBtn.disabled = false
 })
 
 subtractBtn.addEventListener('click', () => {
-    operatorChoice(currOperator)
+    updateValues()
     currOperator = subtractBtn.innerText
+    decimalBtn.disabled = false
 })
 
 divideBtn.addEventListener('click', () => {
-    operatorChoice(currOperator)
+    updateValues()
     currOperator = divideBtn.innerText
+    decimalBtn.disabled = false
 })
 
 multiplyBtn.addEventListener('click', () => {
-    operatorChoice(currOperator)
+    updateValues()
     currOperator = multiplyBtn.innerText
+    decimalBtn.disabled = false
 })
 
-function operatorChoice(currOperator) {
-    operatorClick = true
-    updateArray()
-    operate(currOperator, values)
-}
+function updateValues() {
+    if (tempValue === "") return
 
-function updateArray() {
-    if (tempValue === "" ) return
-    if (operatorClick && tempValue !== "") {
-        values.push(Number(tempValue))
-        console.log(values)
+    if(runningTotal === "") {
+        runningTotal = Number(tempValue)
+        tempValue = ""
+        return
+    }
+
+    if (typeof runningTotal === 'number') {
+        tempValue = Number(tempValue)
+        operate(currOperator, runningTotal, tempValue)
         tempValue = ""
     }
+
 }
 
-function add([...args]) {
+function add(...args) {
     const sum = [...args].reduce((accum, currentValue) => accum + currentValue)
-    roundNumber(sum)
-    values = []
-    values.push(sum)
+    runningTotal = sum
+    display.textContent = runningTotal
 }
 
-function subtract([...args]){
+function subtract(...args){
     const difference = [...args].reduce((accum, currentValue) => accum - currentValue)
-    roundNumber(difference)
-    values = []
-    values.push(difference)
+    runningTotal = difference
+    display.textContent = runningTotal
 }
 
-function multiply([...args]){
+function multiply(...args){
     const product = [...args].reduce((accum, currentValue) => accum * currentValue)
-    roundNumber(product)
-    values = []
-    values.push(product)
+    runningTotal = product
+    display.textContent = runningTotal
 }
 
-function divide([...args]){
+function divide(...args){
     const quotient = [...args].reduce((accum, currentValue) => accum / currentValue)
     if (quotient === Infinity) {
         display.textContent = "Error: DIV/0"
-        let rmValues = values.splice(0,2)
         return
     }
-    roundNumber(quotient)
-    values = []
-    values.push(quotient)
+    runningTotal = quotient
+    display.textContent = runningTotal
+
 }
 
-function operate(operator, [...args]){
+function operate(operator, num1, num2){
     switch(operator) {
         case "+":
-            add([...args])
+            add(num1, num2)
             break
         case "-":
-            subtract([...args])
+            subtract(num1,num2)
             break
         case "x":
-            multiply([...args])
+            multiply(num1, num2)
             break   
         case "÷":
-            divide([...args])
+            divide(num1, num2)
             break 
         default: 
             break       
     }
 }
 
-function calculate() {
-    if (values.length === 0) return
-    updateArray()
-    operate(currOperator, values)
-}
-
 function roundNumber(num) {
-    if(num % 1 === 0)
+    if(num.toString().length >= 8)
         {
+            display.textContent = num.toFixed(8)
+        } else if (num % 1 === 0 || num.toString().length < 5) {
             display.textContent = num
-        } else {
-            display.textContent = num.toFixed(5)
         }
 }
