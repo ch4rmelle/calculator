@@ -13,17 +13,7 @@ const divideBtn = document.querySelector('#divide')
 const multiplyBtn = document.querySelector('#multiply')
 const clearBtn = document.querySelector('#clear')
 const decimalBtn = document.querySelector('#decimal')
-
-clearBtn.addEventListener('click', () => {
-    values = []
-    tempValue = ""
-    display.textContent = ""
-    decimalBtn.disabled = false;
-})
-
-decimalBtn.addEventListener('click', () => {
-    decimalBtn.disabled = true;
-} )
+const percentBtn = document.querySelector('#percent')
 
 for(let num of numBtns) {
     num.addEventListener('click', () => {
@@ -32,45 +22,40 @@ for(let num of numBtns) {
     })
 }
 
+clearBtn.addEventListener('click', () => {
+    values = []
+    tempValue = ""
+    display.textContent = ""
+    decimalBtn.disabled = false;
+})
+
+decimalBtn.addEventListener('click', () =>  decimalBtn.disabled = true )
 equalsBtn.addEventListener('click', calculate)
 
-function operatorChoice() {
-    addBtn.addEventListener('click', () => 
-    {   
-        operatorClick = true
-        updateArray()
-        operate(currOperator, values)
-        currOperator = addBtn.innerText
-        console.log(values)
-    })
+addBtn.addEventListener('click', () => {
+    operatorChoice(currOperator)
+    currOperator = addBtn.innerText
+})
 
-    subtractBtn.addEventListener('click', () => 
-    {
-        operatorClick = true
-        updateArray()
-        operate(currOperator, values)  
-        currOperator = subtractBtn.innerText
-        console.log(values)
-    })
+subtractBtn.addEventListener('click', () => {
+    operatorChoice(currOperator)
+    currOperator = subtractBtn.innerText
+})
 
-    divideBtn.addEventListener('click', () => 
-    {
-        operatorClick = true
-        updateArray()
-        operate(currOperator, values)
-        currOperator = divideBtn.innerText
-        console.log(values)
-    })
+divideBtn.addEventListener('click', () => {
+    operatorChoice(currOperator)
+    currOperator = divideBtn.innerText
+})
 
-    multiplyBtn.addEventListener('click', () => 
-    {
-        operatorClick = true
-        updateArray()
-        operate(currOperator, values)
-        currOperator = multiplyBtn.innerText
-        console.log(values)
-    })
+multiplyBtn.addEventListener('click', () => {
+    operatorChoice(currOperator)
+    currOperator = multiplyBtn.innerText
+})
 
+function operatorChoice(currOperator) {
+    operatorClick = true
+    updateArray()
+    operate(currOperator, values)
 }
 
 function updateArray() {
@@ -83,7 +68,7 @@ function updateArray() {
 }
 
 function add([...args]) {
-    const sum = [...args].reduce((accum, currentValue) => accum + currentValue, 0)
+    const sum = [...args].reduce((accum, currentValue) => accum + currentValue)
     roundNumber(sum)
     values = []
     values.push(sum)
@@ -97,11 +82,10 @@ function subtract([...args]){
 }
 
 function multiply([...args]){
-    const product = [...args].reduce((accum, currentValue) => accum * currentValue, 1)
+    const product = [...args].reduce((accum, currentValue) => accum * currentValue)
     roundNumber(product)
     values = []
     values.push(product)
-
 }
 
 function divide([...args]){
@@ -134,9 +118,9 @@ function operate(operator, [...args]){
             break       
     }
 }
+
 function calculate() {
     if (values.length === 0) return
-
     updateArray()
     operate(currOperator, values)
 }
@@ -149,5 +133,3 @@ function roundNumber(num) {
             display.textContent = num.toFixed(5)
         }
 }
-
-operatorChoice()
