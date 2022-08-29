@@ -164,7 +164,7 @@ function changeSign() {
 
 function roundNumber(num) {
     let numStr = num.toString().split("")
-    if(numStr.length > 15) {
+    if(numStr.length > 12) {
         num = Number(numStr.join("")).toExponential(6)
         return num
     }
