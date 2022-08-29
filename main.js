@@ -54,9 +54,6 @@ function clickOperators() {
     
 }
 
-// if btn is selected === change background color
-// if a new btn is selected remove current selected button === change background color to new button
-
 function updateValues() {
     if (tempValue === "") return
 
@@ -127,7 +124,6 @@ function deleteValue() {
         tempValue = tempValue.toString()
         tempValue = [...tempValue].slice(0,-1).join("")
         inputValues.innerText = tempValue
-        prevValues.innerText = tempValue
     } else {
         inputValues.innerText = ""
     }
