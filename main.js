@@ -32,7 +32,7 @@ window.addEventListener('keydown', (e) => {
         updateValues()
         currOperator = e.key
     } else if (e.key === "=" || e.key === "Enter"){
-        updateValues(e.key)
+        updateValues()
         
     } else if (e.key === "Backspace"){
         deleteValue()
@@ -80,7 +80,7 @@ function clickOperators() {
 // if btn is selected === change background color
 // if a new btn is selected remove current selected button === change background color to new button
 
-function updateValues(key = "") {
+function updateValues() {
     if (tempValue === "") return
 
     if(runningTotal === "") {
@@ -89,7 +89,7 @@ function updateValues(key = "") {
         return
     }
 
-    if (runningTotal || key === "Enter" || key === "=" ) {
+    if (runningTotal) {
         tempValue = roundNumber(tempValue)
         prevValues.innerText = `${runningTotal} ${currOperator} ${tempValue} =`
         operate(currOperator, runningTotal, tempValue)
@@ -180,7 +180,7 @@ function togglePercent() {
 }
 
 function changeSign() {
-    if(inputValues.innerText === tempValue) {
+    if(inputValues.innerText == tempValue) {
         tempValue = Math.sign(tempValue) === 1 ? (-tempValue).toString() : 
         (tempValue * (-1).toString())
         inputValues.innerText = tempValue
@@ -192,15 +192,12 @@ function changeSign() {
     }
 }
 
-const roundNumber = function(num) {
+function roundNumber(num) {
     let numStr = num.toString().split("")
     console.log(numStr)
     if(numStr.length > 15) {
         num = Number(numStr.join("")).toExponential(6)
-
         return num
     }
     return num
-
-
 }
