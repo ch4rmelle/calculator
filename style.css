@@ -117,6 +117,15 @@ button:hover {
             opacity: 1;
       }
     
+      .btn {
+        width: 70px;
+        height: 65px;
+      }
+
+      #display-container {
+        width: 280px;
+      }
+    
 }
 }   
 
