@@ -107,10 +107,6 @@ button:hover {
     padding: 5px
 }
 
-#delete-btn {
-    background-color: rgb(105, 105, 177);
-}
-
 @media screen and (max-device-width: 480px)  {
     @media (hover: none) {
         button:hover { 
