@@ -14,12 +14,12 @@ const percentBtn = document.querySelector('#percent-btn')
 const deleteBtn = document.querySelector('#delete-btn')
 const changeSignBtn = document.querySelector('#change-sign')
 
-clearBtn.addEventListener('click', resetCalc)
-deleteBtn.addEventListener('click', deleteValue)
-percentBtn.addEventListener('click', togglePercent)
-changeSignBtn.addEventListener('click', changeSign)
-decimalBtn.addEventListener('click', () =>  decimalBtn.disabled = true )
-equalsBtn.addEventListener('click', () => {
+clearBtn.addEventListener('mousedown', resetCalc)
+deleteBtn.addEventListener('mousedown', deleteValue)
+percentBtn.addEventListener('mousedown', togglePercent)
+changeSignBtn.addEventListener('mousedown', changeSign)
+decimalBtn.addEventListener('mousedown', () =>  decimalBtn.disabled = true )
+equalsBtn.addEventListener('mousedown', () => {
     updateValues()
 })
 
@@ -44,11 +44,15 @@ window.addEventListener('keydown', (e) => {
         } else {
             displayValues(e.key)
         }
+    } else if (e.key === "%") {
+        togglePercent()
+    } else {
+        return
     }
 })
 
 for(let num of numBtns) {
-    num.addEventListener('click', () => {
+    num.addEventListener('mousedown', () => {
         displayValues(num.innerText)
         clickOperators()
         }
@@ -57,42 +61,45 @@ for(let num of numBtns) {
 
 function displayValues(value) {
     tempValue += value
-    inputValues.textContent= tempValue
+    inputValues.innerText = roundNumber(tempValue)
 }
 
 function clickOperators() {
     for (let op of operatorBtns) {
-        op.addEventListener('click', () =>{
-            if (inputValues.textContent === "") return
+        op.addEventListener('mousedown', () =>{
+            if (inputValues.innerText === "") return
 
             updateValues()
             currOperator = op.innerText
+            decimalBtn.disabled = false
     })
 }
     
 }
 
-// if btn is currently selected === change background color
+// if btn is selected === change background color
 // if a new btn is selected remove current selected button === change background color to new button
 
 function updateValues(key = "") {
     if (tempValue === "") return
 
     if(runningTotal === "") {
-        runningTotal = Number(tempValue)
+        runningTotal = roundNumber(tempValue)
         tempValue = ""
         return
     }
 
-    if (typeof runningTotal === 'number' || key === "Enter" || key === "=" ) {
-        tempValue = Number(tempValue)
-        prevValues.textContent = `${runningTotal} ${currOperator} ${tempValue} =`
+    if (runningTotal || key === "Enter" || key === "=" ) {
+        tempValue = roundNumber(tempValue)
+        prevValues.innerText = `${runningTotal} ${currOperator} ${tempValue} =`
         operate(currOperator, runningTotal, tempValue)
         tempValue = ""
     }
 }
 /* Operator functions */
 function operate(operator, num1, num2){
+    num1 = Number(num1)
+    num2 = Number(num2)
     switch(operator) {
         case "+":
             add(num1, num2)
@@ -111,86 +118,89 @@ function operate(operator, num1, num2){
 
 function add(...args) {
     const sum = [...args].reduce((accum, currentValue) => accum + currentValue)
-    runningTotal = roundNumber(sum)
-    inputValues.textContent = runningTotal
+    runningTotal = sum
+    inputValues.innerText = runningTotal
 }
 
 function subtract(...args){
     const difference = [...args].reduce((accum, currentValue) => accum - currentValue)
     runningTotal = difference
-    inputValues.textContent = runningTotal
+    inputValues.innerText = runningTotal
 }
 
 function multiply(...args){
     const product = [...args].reduce((accum, currentValue) => accum * currentValue)
-    runningTotal = product
-    inputValues.textContent = runningTotal
+    runningTotal = roundNumber(product)
+    inputValues.innerText = runningTotal
 }
 
 function divide(...args){
     const quotient = [...args].reduce((accum, currentValue) => accum / currentValue)
     if (quotient === Infinity) {
-        inputValues.textContent = "Error: DIV/0"
-        runningTotal = 0
+        inputValues.innerText = "Error: DIV/0"
+        runningTotal = ""
         return
     }
     runningTotal = roundNumber(quotient)
-    inputValues.textContent = runningTotal
+    inputValues.innerText = runningTotal
 }
 
 function deleteValue() {
-    if(inputValues.textContent === tempValue) {
+    if(inputValues.innerText === tempValue) {
         tempValue = tempValue.toString()
         tempValue = [...tempValue].slice(0,-1).join("")
-        inputValues.textContent = tempValue
-        prevValues.textContent = tempValue
+        inputValues.innerText = tempValue
+        prevValues.innerText = tempValue
     } else {
-        inputValues.textContent = ""
+        inputValues.innerText = ""
     }
 }
 
 function resetCalc() {
     runningTotal = ""
     tempValue = ""
-    inputValues.textContent = ""
-    prevValues.textContent = ""
+    inputValues.innerText = ""
+    prevValues.innerText = ""
     currOperator = ""
     decimalBtn.disabled = false;
 }
 
 function togglePercent() {
-    if(inputValues.textContent === tempValue) {
+    if(inputValues.innerText === tempValue) {
         tempValue = (tempValue / 100).toString()
-        inputValues.textContent = tempValue
-        prevValues.textContent = tempValue
+        inputValues.innerText = roundNumber(tempValue)
+        prevValues.innerText = roundNumber(tempValue)
 
     } else {
         console.log(typeof runningTotal)
         runningTotal = runningTotal / 100
         console.log(typeof runningTotal)
-        inputValues.textContent = runningTotal
+        inputValues.innerText = roundNumber(runningTotal)
     }
 }
 
 function changeSign() {
-    if(inputValues.textContent === tempValue) {
+    if(inputValues.innerText === tempValue) {
         tempValue = Math.sign(tempValue) === 1 ? (-tempValue).toString() : 
         (tempValue * (-1).toString())
-        inputValues.textContent = tempValue
-        prevValues.textContent = tempValue
+        inputValues.innerText = tempValue
+        prevValues.innerText = tempValue
     }
     else {
         runningTotal = Math.sign(runningTotal) === 1 ? -runningTotal : (runningTotal * (-1))
-        inputValues.textContent = runningTotal
+        inputValues.innerText = runningTotal
     }
 }
 
-function roundNumber(num) {
+const roundNumber = function(num) {
     let numStr = num.toString().split("")
     console.log(numStr)
-    if(numStr.length > 11) {
-        num = Number(numStr.join("")).toPrecision(6)
+    if(numStr.length > 15) {
+        num = Number(numStr.join("")).toExponential(6)
+
         return num
     }
     return num
+
+
 }
