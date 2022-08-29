@@ -20,6 +20,7 @@ percentBtn.addEventListener('mousedown', togglePercent)
 changeSignBtn.addEventListener('mousedown', changeSign)
 decimalBtn.addEventListener('mousedown', () =>  decimalBtn.disabled = true )
 equalsBtn.addEventListener('mousedown', () => {
+    if(inputValues.textContent === "") return
     updateValues()
 })
 
@@ -189,7 +190,7 @@ function chkOperatorKey(operator) {
             currOperator = operator
             break
         case "=":case "Enter":
-            updateValues()
+            inputValues.textContent === "" ? operator.preventDefault : updateValues()
             break
         case "Backspace":
             deleteValue()
