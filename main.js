@@ -24,31 +24,8 @@ equalsBtn.addEventListener('mousedown', () => {
 })
 
 window.addEventListener('keydown', (e) => {
-    if(!isNaN(e.key)) {
-        displayValues(e.key)
-    } else if ( 
-    e.key === "/" || e.key === "*" || 
-    e.key === "+" || e.key === "-" ) {
-        updateValues()
-        currOperator = e.key
-    } else if (e.key === "=" || e.key === "Enter"){
-        updateValues()
-        
-    } else if (e.key === "Backspace"){
-        deleteValue()
-    } else if (e.key === "Escape") {
-        resetCalc()
-    } else if (e.key === ".") {
-        if(tempValue.includes(".")){
-            e.preventDefault()
-        } else {
-            displayValues(e.key)
-        }
-    } else if (e.key === "%") {
-        togglePercent()
-    } else {
-        return
-    }
+   chkNumberKey(e.key)
+   chkOperatorKey(e.key)
 })
 
 for(let num of numBtns) {
@@ -68,7 +45,6 @@ function clickOperators() {
     for (let op of operatorBtns) {
         op.addEventListener('mousedown', () =>{
             if (inputValues.innerText === "") return
-
             updateValues()
             currOperator = op.innerText
             decimalBtn.disabled = false
@@ -166,15 +142,12 @@ function resetCalc() {
 }
 
 function togglePercent() {
-    if(inputValues.innerText === tempValue) {
-        tempValue = (tempValue / 100).toString()
+    if(inputValues.innerText == tempValue) {
+        tempValue = tempValue / 100
         inputValues.innerText = roundNumber(tempValue)
         prevValues.innerText = roundNumber(tempValue)
-
     } else {
-        console.log(typeof runningTotal)
         runningTotal = runningTotal / 100
-        console.log(typeof runningTotal)
         inputValues.innerText = roundNumber(runningTotal)
     }
 }
@@ -194,10 +167,42 @@ function changeSign() {
 
 function roundNumber(num) {
     let numStr = num.toString().split("")
-    console.log(numStr)
     if(numStr.length > 15) {
         num = Number(numStr.join("")).toExponential(6)
         return num
     }
     return num
+}
+
+function chkNumberKey(num) {
+    switch(true) {
+        case !isNaN(num) === true:
+            displayValues(num)
+                break
+    }
+}
+
+function chkOperatorKey(operator) {
+    switch(operator) {
+        case "+":case "/":case "-":case "*":
+            updateValues()
+            currOperator = operator
+            break
+        case "=":case "Enter":
+            updateValues()
+            break
+        case "Backspace":
+            deleteValue()
+            break
+        case "Delete":
+            resetCalc()
+            break
+        case ".":
+            tempValue.includes(".") ? e.preventDefault() : displayValues(operator)
+            break
+        case "%":
+            togglePercent()
+            break
+        default: break
+    }
 }
