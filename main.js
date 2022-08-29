@@ -1,7 +1,6 @@
 let tempValue = ""
 let runningTotal = ""
 let currOperator = ""
-let isBtnSelected = false;
 
 const numBtns = document.querySelectorAll('.num')
 const operatorBtns = document.querySelectorAll('.operator')
@@ -49,25 +48,55 @@ function clickOperators() {
             updateValues()
             currOperator = op.innerText
             decimalBtn.disabled = false
-    })
-}
-    
+        })
+    }
 }
 
 function updateValues() {
     if (tempValue === "") return
-
     if(runningTotal === "") {
         runningTotal = roundNumber(tempValue)
         tempValue = ""
         return
     }
-
     if (runningTotal) {
         tempValue = roundNumber(tempValue)
         prevValues.innerText = `${runningTotal} ${currOperator} ${tempValue} =`
         operate(currOperator, runningTotal, tempValue)
         tempValue = ""
+    }
+}
+
+function chkNumberKey(num) {
+    switch(true) {
+        case !isNaN(num) === true:
+            displayValues(num)
+            break
+    }
+}
+
+function chkOperatorKey(operator) {
+    switch(operator) {
+        case "+":case "/":case "-":case "*":
+            updateValues()
+            currOperator = operator
+            break
+        case "=":case "Enter":
+            inputValues.textContent === "" ? operator.preventDefault : updateValues()
+            break
+        case "Backspace":
+            deleteValue()
+            break
+        case "Delete":
+            resetCalc()
+            break
+        case ".":
+            tempValue.includes(".") ? e.preventDefault() : displayValues(operator)
+            break
+        case "%":
+            togglePercent()
+            break
+        default: break
     }
 }
 /* Operator functions */
@@ -121,11 +150,12 @@ function divide(...args){
 
 function deleteValue() {
     if(inputValues.innerText === tempValue) {
-        tempValue = tempValue.toString()
         tempValue = [...tempValue].slice(0,-1).join("")
         inputValues.innerText = tempValue
     } else {
         inputValues.innerText = ""
+        prevValues.innerText = ""
+        runningTotal = ""
     }
 }
 
@@ -151,8 +181,8 @@ function togglePercent() {
 
 function changeSign() {
     if(inputValues.innerText == tempValue) {
-        tempValue = Math.sign(tempValue) === 1 ? (-tempValue).toString() : 
-        (tempValue * (-1).toString())
+        tempValue = Math.sign(tempValue) === 1 ? (-tempValue) : 
+        (tempValue * (-1))
         inputValues.innerText = tempValue
         prevValues.innerText = tempValue
     }
@@ -169,37 +199,4 @@ function roundNumber(num) {
         return num
     }
     return num
-}
-
-function chkNumberKey(num) {
-    switch(true) {
-        case !isNaN(num) === true:
-            displayValues(num)
-                break
-    }
-}
-
-function chkOperatorKey(operator) {
-    switch(operator) {
-        case "+":case "/":case "-":case "*":
-            updateValues()
-            currOperator = operator
-            break
-        case "=":case "Enter":
-            inputValues.textContent === "" ? operator.preventDefault : updateValues()
-            break
-        case "Backspace":
-            deleteValue()
-            break
-        case "Delete":
-            resetCalc()
-            break
-        case ".":
-            tempValue.includes(".") ? e.preventDefault() : displayValues(operator)
-            break
-        case "%":
-            togglePercent()
-            break
-        default: break
-    }
 }
