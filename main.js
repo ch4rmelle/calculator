@@ -122,18 +122,18 @@ function operate(operator, num1, num2){
 function add(a, b) {
     const sum = a+b
     lastOperand = sum
-    inputValues.innerText = lastOperand
+    inputValues.innerText = roundNumber(lastOperand)
 }
 
 function subtract(a,b){
     const difference = a - b
-    inputValues.innerText = lastOperand
+    inputValues.innerText = roundumber(lastOperand)
 }
 
 function multiply(a,b){
     const product = a * b
-    lastOperand = roundNumber(product)
-    inputValues.innerText = lastOperand
+    lastOperand = product
+    inputValues.innerText = roundNumber(lastOperand)
 }
 
 function divide(a, b){
@@ -193,6 +193,7 @@ function changeSign() {
 }
 
 function roundNumber(num) {
+    console.log(typeof num)
     let numStr = num.split("")
     if(numStr.length > 12) {
         num = Number(numStr.join("")).toExponential(6)
