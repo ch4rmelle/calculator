@@ -23,11 +23,6 @@ equalsBtn.addEventListener('mousedown', () => {
     updateValues()
 })
 
-window.addEventListener('keydown', (e) => {
-   chkNumberKey(e.key)
-   chkOperatorKey(e.key)
-})
-
 for(let num of numBtns) {
     num.addEventListener('mousedown', () => {
         displayValues(num.innerText)
@@ -38,7 +33,7 @@ for(let num of numBtns) {
 
 function displayValues(value) {
     currentOperand += value
-    inputValues.innerText = roundNumber(currentOperand)
+    inputValues.innerText = sciNotation(currentOperand)
 }
 
 function clickOperators() {
@@ -55,18 +50,126 @@ function clickOperators() {
 function updateValues() {
     if (currentOperand === "") return
     if(lastOperand === "") {
-        lastOperand = roundNumber(currentOperand)
+        lastOperand = sciNotation(currentOperand)
         currentOperand = ""
         return
     }
     if (lastOperand) {
-        currentOperand = roundNumber(currentOperand)
+        currentOperand = sciNotation(currentOperand)
         prevValues.innerText = `${lastOperand} ${currOperator} ${currentOperand} =`
         operate(currOperator, lastOperand, currentOperand)
         currentOperand = ""
     }
 }
 
+/* Operator functions */
+function operate(operator, num1, num2){
+    num1 = Number(num1)
+    num2 = Number(num2)
+    switch(operator) {
+        case "+":
+            add(num1, num2)
+            break
+        case "-":
+            subtract(num1,num2)
+            break
+        case "*":
+            multiply(num1, num2)
+            break   
+        case "/":
+            divide(num1, num2)
+            break     
+    }
+}
+
+function add(a, b) {
+    const sum = a+b
+    lastOperand = sum
+    inputValues.innerText = sciNotation(lastOperand)
+}
+
+function subtract(a,b){
+    const difference = a - b
+    inputValues.innerText = sciNotation(lastOperand)
+}
+
+function multiply(a,b){
+    const product = a * b
+    lastOperand = product
+    inputValues.innerText = sciNotation(lastOperand)
+}
+
+function divide(a, b){
+    const quotient = a / b
+    if (quotient === Infinity) {
+        inputValues.innerText = "Error: DIV/0"
+        return
+    }
+    lastOperand = sciNotation(quotient)
+    inputValues.innerText = lastOperand
+}
+
+function deleteValue() {
+    if(inputValues.innerText === currentOperand) {
+        currentOperand = [...currentOperand].slice(0,-1).join("")
+        inputValues.innerText = currentOperand
+    } else {
+        inputValues.innerText = ""
+        prevValues.innerText = ""
+        lastOperand = ""
+    }
+}
+
+function resetCalc() {
+    lastOperand = ""
+    currentOperand = ""
+    inputValues.innerText = ""
+    prevValues.innerText = ""
+    currOperator = ""
+    decimalBtn.disabled = false;
+}
+
+function togglePercent() {
+    if (inputValues.innerText == "") return
+    if(inputValues.innerText == currentOperand) {
+        currentOperand = currentOperand / 100
+        inputValues.innerText = sciNotation(currentOperand)
+        prevValues.innerText = sciNotation(currentOperand)
+    } else {
+        lastOperand = lastOperand / 100
+        inputValues.innerText = sciNotation(lastOperand)
+    }
+}
+
+function changeSign() {
+    if (!inputValues.textContent) return
+    if(inputValues.innerText == currentOperand) {
+        currentOperand = Math.sign(currentOperand) === 1 ? (-currentOperand) : 
+        (currentOperand * (-1))
+        inputValues.innerText = currentOperand
+        prevValues.innerText = currentOperand
+    }
+    else {
+        lastOperand = Math.sign(lastOperand) === 1 ? -lastOperand : (lastOperand * (-1))
+        inputValues.innerText = lastOperand
+    }
+}
+
+function sciNotation(num) {
+    let numStr = num.toString().split("")
+    if(numStr.length > 12) {
+        num = Number(numStr.join("")).toExponential(6)
+        return num
+    }
+    return num
+}
+
+/* Keyboard Support*/
+window.addEventListener('keydown', (e) => {
+    chkNumberKey(e.key)
+    chkOperatorKey(e.key)
+ })
+ 
 function chkNumberKey(num) {
     switch(true) {
         case !isNaN(num) === true:
@@ -98,106 +201,4 @@ function chkOperatorKey(operator) {
             break
         default: break
     }
-}
-/* Operator functions */
-function operate(operator, num1, num2){
-    num1 = Number(num1)
-    num2 = Number(num2)
-    switch(operator) {
-        case "+":
-            add(num1, num2)
-            break
-        case "-":
-            subtract(num1,num2)
-            break
-        case "*":
-            multiply(num1, num2)
-            break   
-        case "/":
-            divide(num1, num2)
-            break     
-    }
-}
-
-function add(a, b) {
-    const sum = a+b
-    lastOperand = sum
-    inputValues.innerText = roundNumber(lastOperand)
-}
-
-function subtract(a,b){
-    const difference = a - b
-    inputValues.innerText = roundumber(lastOperand)
-}
-
-function multiply(a,b){
-    const product = a * b
-    lastOperand = product
-    inputValues.innerText = roundNumber(lastOperand)
-}
-
-function divide(a, b){
-    const quotient = a / b
-    if (quotient === Infinity) {
-        inputValues.innerText = "Error: DIV/0"
-        return
-    }
-    lastOperand = roundNumber(quotient)
-    inputValues.innerText = lastOperand
-}
-
-function deleteValue() {
-    if(inputValues.innerText === currentOperand) {
-        currentOperand = [...currentOperand].slice(0,-1).join("")
-        inputValues.innerText = currentOperand
-    } else {
-        inputValues.innerText = ""
-        prevValues.innerText = ""
-        lastOperand = ""
-    }
-}
-
-function resetCalc() {
-    lastOperand = ""
-    currentOperand = ""
-    inputValues.innerText = ""
-    prevValues.innerText = ""
-    currOperator = ""
-    decimalBtn.disabled = false;
-}
-
-function togglePercent() {
-    if (!inputValues.textContent) return
-    if(inputValues.innerText == currentOperand) {
-        currentOperand = currentOperand / 100
-        inputValues.innerText = roundNumber(currentOperand)
-        prevValues.innerText = roundNumber(currentOperand)
-    } else {
-        lastOperand = lastOperand / 100
-        inputValues.innerText = roundNumber(lastOperand)
-    }
-}
-
-function changeSign() {
-    if (!inputValues.textContent) return
-    if(inputValues.innerText == currentOperand) {
-        currentOperand = Math.sign(currentOperand) === 1 ? (-currentOperand) : 
-        (currentOperand * (-1))
-        inputValues.innerText = currentOperand
-        prevValues.innerText = currentOperand
-    }
-    else {
-        lastOperand = Math.sign(lastOperand) === 1 ? -lastOperand : (lastOperand * (-1))
-        inputValues.innerText = lastOperand
-    }
-}
-
-function roundNumber(num) {
-    console.log(typeof num)
-    let numStr = num.split("")
-    if(numStr.length > 12) {
-        num = Number(numStr.join("")).toExponential(6)
-        return num
-    }
-    return num
 }
