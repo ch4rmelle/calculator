@@ -90,6 +90,7 @@ function add(a, b) {
 
 function subtract(a,b){
     const difference = a - b
+    lastOperand = difference
     inputValues.innerText = sciNotation(lastOperand)
 }
 
